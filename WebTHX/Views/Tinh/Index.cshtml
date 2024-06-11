@@ -1,0 +1,150 @@
+﻿@model IEnumerable<WebTHX.Entities.Tinh>
+
+<div class="row">
+    <div class="col-xl-12">
+        <h4 class="card-title mb-0 flex-grow-1">
+            Danh Sách Tỉnh            
+        </h4>
+    </div><!-- end card header -->
+
+    <div class="live-preview">
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle table-nowrap mb-0">
+                <thead class="thead-light text-center">
+                    <tr>
+                        <th scope="col">Mã Tỉnh</th>
+                        <th scope="col">Tên Tỉnh</th>
+                        <th scope="col">Cấp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-medium text-center">@item.MaT</td>
+                            <td class="text-center">@item.Ten</td>
+                            <td class="text-center">@item.Cap</td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-primary btn-sm no-border" data-bs-toggle="modal" data-bs-target="#editModal" data-id="@item.MaT" data-name="@item.Ten" data-cap="@item.Cap">Edit |</button>
+                                <form asp-controller="Tinh" asp-action="Delete" method="post" style="display: inline;">
+                                    <input type="hidden" name="id" value="@item.MaT" />
+                                    <button type="submit" class="btn btn-danger btn-sm no-border">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    <div class="col-xl-12 mt-3">
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createModal">Create New</button>
+                    </div>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div><!-- end card-body -->
+</div><!-- end card -->
+<!-- Modal Create Tinh -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createModalLabel">Create Tỉnh</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-controller="Tinh" asp-action="Create" method="post">
+                    <div class="mb-3">
+                        <label for="MaTinh" class="form-label">Mã Tỉnh</label>
+                        <input type="text" class="form-control" name="MaT" id="exampleInputPassword1">
+                    </div>
+                    <div class="mb-3">
+                        <label for="TenTinh" class="form-label">Tên Tỉnh</label>
+                        <input type="text" class="form-control" name="Ten" id="exampleInputPassword1">
+                    </div>
+                    <div class="mb-3">
+                        <label for="Cap" class="form-label">Cấp</label>
+                        <input type="text" class="form-control" name="Cap" id="exampleInputPassword1">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit Tinh -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Tỉnh</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-controller="Tinh" asp-action="Edited" method="post">
+                    <input type="hidden" name="MaT" id="editMaT">
+                    <div class="mb-3">
+                        <label for="editTen" class="form-label">Tên Tỉnh</label>
+                        <input type="text" class="form-control" name="Ten" id="editTen">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editCap" class="form-label">Cấp</label>
+                        <input type="text" class="form-control" name="Cap" id="editCap">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-success {
+        border: none;
+        background-color: transparent;
+        color: #198754; /* Màu chữ tương ứng */
+        padding: 0;
+        cursor: pointer;
+    }
+
+        .btn-success:focus, .btn-success:hover {
+            background-color: transparent; /* Loại bỏ màu nền khi hover hoặc focus */
+            color: #198754; /* Màu chữ tương ứng */
+        }
+
+        .btn-success:focus {
+            box-shadow: none; /* Loại bỏ hiệu ứng khi focus */
+        }
+
+    .no-border {
+        border: none; /* Loại bỏ đường viền */
+        background-color: transparent; /* Nền trong suốt */
+        padding: 0;
+        color: #198754; /* Màu chữ xanh lá cây */
+    }
+
+        .no-border:focus, .no-border:hover {
+            background-color: transparent; /* Loại bỏ màu nền khi hover hoặc focus */
+            color: #198754; /* Giữ nguyên màu chữ xanh lá cây */
+            box-shadow: none; /* Loại bỏ hiệu ứng khi focus */
+        }
+</style>
+
+<script>
+    var editModal = document.getElementById('editModal');
+    editModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget; // Button that triggered the modal
+        var maT = button.getAttribute('data-id');
+        var ten = button.getAttribute('data-name');
+        var cap = button.getAttribute('data-cap');
+
+        // Update the modal's content.
+        var modalTitle = editModal.querySelector('.modal-title');
+        var inputMaT = editModal.querySelector('#editMaT');
+        var inputTen = editModal.querySelector('#editTen');
+        var inputCap = editModal.querySelector('#editCap');
+
+        inputMaT.value = maT;
+        inputTen.value = ten;
+        inputCap.value = cap;
+    });
+</script>
